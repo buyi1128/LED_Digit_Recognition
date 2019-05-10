@@ -2,11 +2,16 @@ import torch.nn as nn
 from torch.nn import init
 
 class myNet(nn.Module):
-    def __init__(self):
+    def __init__(self, imtype):
         super(myNet, self).__init__()
+        if imtype == 'bit':
+            n = 1
+        elif imtype == 'rgb':
+            n = 3
+
         self.conv1_1 = nn.Sequential(     # input_size=(1*28*28)
             nn.Conv2d(
-                in_channels=1,
+                in_channels=n,
                 out_channels=16,
                 kernel_size=3,
                 padding=1
