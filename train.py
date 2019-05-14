@@ -6,6 +6,7 @@ import torch
 import torch.optim as optim
 import torch.nn.init as init
 import matplotlib.pyplot as plt
+# from tensorboardX import SummaryWriter
 
 from dataLoader import dataLoader
 from net import myNet
@@ -14,14 +15,14 @@ def train(type):
 
     torch.manual_seed(10)
 
-    bs = 128
+    bs = 256
     lr = 0.001
     epoch = 40
     stepLength = 20
     classes = 11
 
     data = dataLoader(type, "dataset/", bs, ifUpdate=True)
-    testInputs, testLabels = data.getTestData()
+    testInputs, testLabels, _ = data.getTestData()
     print("数据集加载完毕")
 
 
@@ -74,7 +75,7 @@ def train(type):
         _, predicted = torch.max(outputs.data, 1)
         correct = (predicted == testLabels.long()).sum()
         print('第%d个epoch的识别准确率为：%d%%' % (e + 1, (100 * correct / testLabels.shape[0])))
-    torch.save(net.state_dict(), type + "_net.pkl")
+    torch.save(net.state_dict(), type + "_" + str(net.__class__.__name__) + "_net.pkl")
     plt.figure(0)
     x = [i for i in range(len(train_loss))]
     plt.plot(x, train_loss)
@@ -87,15 +88,21 @@ def test(type):
         shutil.rmtree(result)
     if not os.path.exists(result):
         os.makedirs(result)
-    data = dataLoader(type, "dataset/", bs=128, ifUpdate=True)
-    testInputs, testLabels = data.getTestData()
+    data = dataLoader(type, "dataset/", bs=256, ifUpdate=False)
+    testInputs, testLabels, names = data.getTestData()
     net = myNet(type)
-    net.load_state_dict(torch.load(type + "_net.pkl"))
+    net.load_state_dict(torch.load(type + "_" + str(net.__class__.__name__) + "_net.pkl"))
     net.eval()
     print("model load")
+    outputs = net.forward(testInputs)
+    _, predicted = torch.max(outputs.data, 1)
+    correct = (predicted == testLabels.long()).sum()
+    print('识别准确率为：%d%%' % ((100 * correct / testLabels.shape[0])))
+
+    # show result picture
     for i in range(testInputs.shape[0]):
-        testimg = np.array(testInputs[i].view(28, 28))
-        res = net.forward(testInputs[i].view(1,1,28,28))
+        testimg = cv2.imread(names[i])
+        res = net.forward(testInputs[i].view(1, 3, 28, 28))
         _, predicted = torch.max(res.data, 1)
         # cv2.imshow("test", test)
         name = os.path.join(result, str(i) + "__" + str(predicted.numpy()) + ".bmp")
@@ -105,7 +112,7 @@ def test(type):
     print("done!")
 
 if __name__ == "__main__":
-    train('rgb')
+    # train('rgb')
     test('rgb')
 
 
