@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/LED_Digit_Recognition.iml" filepath="$PROJECT_DIR$/.idea/LED_Digit_Recognition.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../GitHub/meterReader/.idea/meterReader.iml" filepath="$PROJECT_DIR$/../../../GitHub/meterReader/.idea/meterReader.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,14 @@
+.idea
+.DS_Store
+*.iml
+*.xml
+*.pyc
+*.json
+*.h5
+*.hdf5
+*.pkl
+__pycache__
+old_result
+rgbresult
+bitresult
+dataset
